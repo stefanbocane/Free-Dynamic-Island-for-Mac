@@ -259,7 +259,7 @@ struct AboutTab: View {
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
                     codeBlock("""
-                    curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
+                    curl -fsSL https://raw.githubusercontent.com/stefanbocane/Free-Dynamic-Island-for-Mac/main/bootstrap.sh | bash
                     """)
                 }
 

@@ -15,7 +15,7 @@ The one-shot installer below takes care of the rest (Homebrew + XcodeGen).
 **One-shot (fresh Mac, nothing set up):**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/stefanbocane/Free-Dynamic-Island-for-Mac/main/bootstrap.sh | bash
 ```
 
 This installs Homebrew + xcodegen if missing, clones the repo to `~/Developer/IslandApp`, then runs `install.sh` which sets up stable code signing, builds Release, installs to `/Applications/`, and launches.
@@ -23,7 +23,7 @@ This installs Homebrew + xcodegen if missing, clones the repo to `~/Developer/Is
 **Don't trust `curl | bash`?** Read it first:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh -o bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/stefanbocane/Free-Dynamic-Island-for-Mac/main/bootstrap.sh -o bootstrap.sh
 less bootstrap.sh    # review
 bash bootstrap.sh
 ```

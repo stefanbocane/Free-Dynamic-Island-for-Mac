@@ -3,7 +3,7 @@
 #
 # One-shot installer for IslandApp. Designed to be piped directly from GitHub:
 #
-#   curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/stefanbocane/Free-Dynamic-Island-for-Mac/main/bootstrap.sh | bash
 #
 # What it does:
 #   1. Ensures xcodegen is available — prefers Homebrew if present, otherwise
@@ -16,7 +16,7 @@
 
 set -e
 
-REPO_URL="https://github.com/stefanbocane/DynamicIslandMacCreation-.git"
+REPO_URL="https://github.com/stefanbocane/Free-Dynamic-Island-for-Mac.git"
 TARGET_DIR="${HOME}/Developer/IslandApp"
 
 log()  { printf "\033[1;34m→\033[0m %s\n" "$*"; }
