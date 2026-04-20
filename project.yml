@@ -1,0 +1,59 @@
+name: IslandApp
+options:
+  bundleIdPrefix: com.sbocanegra
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEAD_CODE_STRIPPING: YES
+    ENABLE_HARDENED_RUNTIME: NO
+    CODE_SIGN_STYLE: Manual
+    # Ad-hoc by default ("-"). Run `./setup-signing.sh` to switch to a stable
+    # self-signed identity — it patches this file and regenerates the xcodeproj
+    # so rebuilt apps keep their TCC permissions.
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+    ENABLE_APP_SANDBOX: NO
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  IslandApp:
+    type: application
+    platform: macOS
+    sources:
+      - path: IslandApp
+        excludes:
+          - "Resources/Info.plist"
+          - "Resources/IslandApp.entitlements"
+    resources: []
+    info:
+      path: IslandApp/Resources/Info.plist
+      properties:
+        LSUIElement: true
+        LSMinimumSystemVersion: "14.0"
+        CFBundleName: IslandApp
+        CFBundleDisplayName: Island
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleIdentifier: "com.sbocanegra.IslandApp"
+        CFBundlePackageType: APPL
+        NSCalendarsUsageDescription: "Island shows your next events in the pill under the notch."
+        NSAppleEventsUsageDescription: "Island reads now-playing info from Spotify and controls playback."
+        NSBluetoothAlwaysUsageDescription: "Island displays AirPods and Bluetooth headphone battery levels."
+        NSHumanReadableCopyright: ""
+        NSPrincipalClass: NSApplication
+        NSSupportsAutomaticTermination: false
+        NSSupportsSuddenTermination: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sbocanegra.IslandApp
+        PRODUCT_NAME: IslandApp
+        CODE_SIGN_ENTITLEMENTS: IslandApp/Resources/IslandApp.entitlements
+        GENERATE_INFOPLIST_FILE: NO
+    dependencies:
+      - sdk: IOBluetooth.framework
+      - sdk: CoreAudio.framework
+      - sdk: Carbon.framework
