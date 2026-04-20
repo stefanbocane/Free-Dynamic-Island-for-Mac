@@ -24,6 +24,7 @@ struct GeneralTab: View {
     @EnvironmentObject var launch: LaunchAtLogin
     @EnvironmentObject var system: SystemHUDService
     @EnvironmentObject var fullscreen: FullscreenWatcher
+    @EnvironmentObject var accessibility: AccessibilityPreferences
 
     var body: some View {
         ScrollView {
@@ -34,12 +35,37 @@ struct GeneralTab: View {
                 sectionHeader("HUDs")
                 hudBox
 
+                sectionHeader("Appearance")
+                appearanceBox
+
                 sectionHeader("Behavior")
                 behaviorBox
 
                 Spacer()
             }
             .padding(22)
+        }
+    }
+
+    private var appearanceBox: some View {
+        SettingsBox {
+            HStack {
+                Text("Pill opacity")
+                    .font(.system(size: 13, weight: .medium))
+                Spacer()
+                Text("\(Int((accessibility.pillOpacity * 100).rounded()))%")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(.secondary)
+            }
+            Slider(value: $accessibility.pillOpacity, in: 0.5...1.0, step: 0.05)
+                .disabled(accessibility.reduceTransparency)
+
+            Text(accessibility.reduceTransparency
+                ? "System Reduce Transparency is on — pill is forced to 100%."
+                : "100% is solid black. Lower values let the wallpaper show through the pill body.")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
         }
     }
 

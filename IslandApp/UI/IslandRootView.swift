@@ -10,8 +10,9 @@ struct IslandRootView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            PillBackground()
-                .padding(.top, IslandPanelController.contentTopPadding(for: controller.state))
+            // Pill fills the entire panel so its flat top sits flush with the
+            // screen edge; only content is pushed down by contentTopPadding.
+            PillBackground(state: controller.state)
             content
                 .padding(.horizontal, 10)
                 .padding(.top, IslandPanelController.contentTopPadding(for: controller.state) + 2)
@@ -40,29 +41,23 @@ struct IslandRootView: View {
 }
 
 struct PillBackground: View {
+    let state: IslandState
     @EnvironmentObject var accessibility: AccessibilityPreferences
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(backgroundStyle)
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
-            )
-            .shadow(color: .black.opacity(accessibility.reduceTransparency ? 0 : 0.35),
-                    radius: 16, x: 0, y: 6)
-    }
-
-    private var backgroundStyle: some ShapeStyle {
-        if accessibility.reduceTransparency {
-            return AnyShapeStyle(Color.black.opacity(0.95))
-        }
-        return AnyShapeStyle(
-            LinearGradient(
-                colors: [Color.black.opacity(0.92), Color.black.opacity(0.88)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
+        // Flat top, rounded bottom — pill flows from the screen top like iPhone
+        // Dynamic Island. Transient HUDs still float free below the menu bar, so
+        // they keep the pill shape (rounded on all sides).
+        let bottomRadius: CGFloat = 22
+        let topRadius: CGFloat = state.isHUD ? 22 : 0
+        let shape = UnevenRoundedRectangle(
+            topLeadingRadius: topRadius,
+            bottomLeadingRadius: bottomRadius,
+            bottomTrailingRadius: bottomRadius,
+            topTrailingRadius: topRadius,
+            style: .continuous
         )
+        return shape
+            .fill(Color.black.opacity(accessibility.effectivePillOpacity))
     }
 }
