@@ -1,8 +1,7 @@
 # IslandApp
 
-Personal-use Dynamic Island for macOS. Pill under the notch that shows Spotify now-playing, next calendar event with Join button, volume/brightness/AirPods/charging HUDs, and acts as a file drop zone.
 
-Built per `~/.claude/plans/yeah-real-design-and-splendid-pizza.md`.
+So annoying that people make you pay for these dynamic island apps. Simple one here for free. Follow instructions to install
 
 ## Requirements
 
