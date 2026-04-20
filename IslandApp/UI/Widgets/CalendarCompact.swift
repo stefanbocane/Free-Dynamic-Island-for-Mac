@@ -13,8 +13,10 @@ struct CalendarCompact: View {
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.85))
                     .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
             }
         }
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     static func dotOnly() -> some View {

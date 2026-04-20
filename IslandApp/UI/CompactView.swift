@@ -32,9 +32,7 @@ struct CompactView: View {
             } else if calendar.nextEvent != nil {
                 CalendarCompact()
             } else {
-                Circle()
-                    .fill(Color.white.opacity(0.3))
-                    .frame(width: 6, height: 6)
+                Color.clear
             }
         }
     }
@@ -43,15 +41,6 @@ struct CompactView: View {
     private var rightSide: some View {
         if spotify.nowPlaying.isPlaying {
             MiniWaveform(color: spotifyTint)
-        } else if let next = calendar.nextEvent, next.minutesUntilStart <= 60, next.minutesUntilStart >= 0 {
-            HStack(spacing: 5) {
-                Circle()
-                    .fill(Color(nsColor: next.calendarColor))
-                    .frame(width: 7, height: 7)
-                Text(countdown(for: next))
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.85))
-            }
         } else {
             MiniClock()
         }
@@ -70,13 +59,6 @@ struct CompactView: View {
 
     private var notchHeight: CGFloat {
         controller.metrics?.notchHeight ?? 32
-    }
-
-    private func countdown(for e: CalendarEventItem) -> String {
-        let m = e.minutesUntilStart
-        if m <= 0 { return "now" }
-        if m < 60 { return "\(m)m" }
-        return "\(m / 60)h"
     }
 }
 
