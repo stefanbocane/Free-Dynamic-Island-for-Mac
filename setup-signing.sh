@@ -40,11 +40,15 @@ openssl req -x509 -newkey rsa:2048 -nodes \
 
 # Bundle into PKCS#12 so `security import` accepts it.
 # OpenSSL 3 uses AES-256-CBC + SHA-256 MAC by default, which `security import`
-# on macOS cannot decrypt with an empty password. Using `-legacy` plus a
-# throwaway passphrase avoids both incompatibilities — the passphrase is only
-# used to wrap the transient .p12 file and is discarded with the tmpdir.
+# on macOS cannot decrypt; `-legacy` plus a throwaway passphrase avoids that.
+# LibreSSL (Apple's system openssl) doesn't have `-legacy` and writes a format
+# `security import` already understands, so only add the flag when needed.
 P12_PASS="islandapp"
-openssl pkcs12 -export -legacy -out cert.p12 -inkey key.pem -in cert.pem \
+case "$(openssl version 2>/dev/null)" in
+    "OpenSSL 3."*) LEGACY_FLAG="-legacy" ;;
+    *)             LEGACY_FLAG="" ;;
+esac
+openssl pkcs12 -export $LEGACY_FLAG -out cert.p12 -inkey key.pem -in cert.pem \
     -password "pass:${P12_PASS}"
 
 # Import the keypair into the login keychain, granting codesign access.
