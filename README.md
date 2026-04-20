@@ -5,9 +5,10 @@ So annoying that people make you pay for these dynamic island apps. Simple one h
 
 ## Requirements
 
-- macOS 13 Ventura or newer (26.x tested)
-- Xcode 15+
-- [XcodeGen](https://github.com/yonaskolb/XcodeGen): `brew install xcodegen`
+- macOS 14 Sonoma or newer (26.x tested)
+- Xcode Command Line Tools (`xcode-select --install`)
+
+The one-shot installer below takes care of the rest (Homebrew + XcodeGen).
 
 ## Install
 
@@ -51,19 +52,19 @@ On first use, macOS will prompt for:
 
 If you deny one, the corresponding feature gracefully degrades. Toggle in Settings shows status + a button that opens the right System Settings pane.
 
-## Feature flags
+## Settings
 
-Settings scene:
-- **Launch at login** — on/off
-- **Show Spotify / Calendar / Volume / Brightness / AirPods / Charging / File drop** — per-widget toggles
-- **True volume HUD replacement** — opt-in, needs Accessibility permission
+General tab:
+- **Launch at login** — auto-start on boot (requires install to `/Applications/`).
+- **True volume HUD replacement** — opt-in, needs Accessibility permission. Suppresses the stock macOS volume HUD so only Island's pill shows.
+- **Hide when a fullscreen app is playing audio** — turn off to keep the pill visible over fullscreen video / games.
 
 ## Architecture
 
-See `~/.claude/plans/yeah-real-design-and-splendid-pizza.md` for the full design. Short version: a single borderless `NSPanel` hugs the notch; SwiftUI renders inside; a `WidgetRouter` picks the active widget based on priority (transient HUD → Spotify → Calendar → idle); services publish state via Combine.
+Short version: a borderless `NSPanel` hugs the notch; SwiftUI renders inside; a `WidgetRouter` picks the active widget by priority (transient HUD → Spotify → Calendar → idle); services publish state via Combine.
 
 ## Notes
 
-- App Sandbox is off by design. We need `CGEventTap`, `IOBluetooth`, `IOKit`, and AppleEvents — all sandbox-hostile.
-- Ad-hoc signed (`codesign --sign -`). Not for distribution. Personal use only.
-- MediaRemote private framework is *not* used; Apple broke third-party access in macOS 15.4 (2025). Spotify is read via `DistributedNotificationCenter` + AppleScript only.
+- App Sandbox is off by design — `CGEventTap`, `IOBluetooth`, `IOKit`, and AppleEvents are all sandbox-hostile.
+- Self-signed (`setup-signing.sh` creates a stable identity in your login keychain). Not notarized, not for the App Store.
+- MediaRemote private framework is *not* used; Apple broke third-party access in macOS 15.4. Spotify is read via `DistributedNotificationCenter` + AppleScript only.
