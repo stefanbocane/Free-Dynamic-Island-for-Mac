@@ -6,10 +6,11 @@
 #   curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
 #
 # What it does:
-#   1. Installs Homebrew if missing.
-#   2. Installs xcodegen via brew.
-#   3. Clones (or updates) the repo at ~/Developer/IslandApp.
-#   4. Runs ./install.sh which handles signing, build, /Applications install.
+#   1. Ensures xcodegen is available — prefers Homebrew if present, otherwise
+#      downloads the official xcodegen binary to ~/.islandapp-tools (no admin
+#      required, so it works on managed / non-admin accounts).
+#   2. Clones (or updates) the repo at ~/Developer/IslandApp.
+#   3. Runs ./install.sh which handles signing, build, /Applications install.
 #
 # Safe and idempotent — re-run any time to pull the latest and reinstall.
 
@@ -33,11 +34,9 @@ if ! xcode-select -p >/dev/null 2>&1; then
     exit 0
 fi
 
-# Homebrew.
+# Pick up a brew that's already installed but not on PATH (common when brew is
+# present but the user's shell hasn't sourced shellenv yet).
 if ! command -v brew >/dev/null 2>&1; then
-    log "Installing Homebrew"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Add brew to PATH for the rest of this session.
     if [ -x /opt/homebrew/bin/brew ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
     elif [ -x /usr/local/bin/brew ]; then
@@ -45,11 +44,32 @@ if ! command -v brew >/dev/null 2>&1; then
     fi
 fi
 
-# xcodegen.
+# xcodegen — prefer brew when it's available, otherwise drop a standalone
+# binary into a user-owned prefix. Avoids requiring admin/sudo.
+TOOLS_DIR="${HOME}/.islandapp-tools"
 if ! command -v xcodegen >/dev/null 2>&1; then
-    log "Installing xcodegen"
-    brew install xcodegen
+    if command -v brew >/dev/null 2>&1; then
+        log "Installing xcodegen via Homebrew"
+        brew install xcodegen
+    else
+        log "Fetching xcodegen binary (no Homebrew required)"
+        mkdir -p "$TOOLS_DIR"
+        curl -fsSL https://github.com/yonaskolb/XcodeGen/releases/latest/download/xcodegen.zip \
+            -o "$TOOLS_DIR/xcodegen.zip"
+        rm -rf "$TOOLS_DIR/xcodegen"
+        unzip -oq "$TOOLS_DIR/xcodegen.zip" -d "$TOOLS_DIR"
+        rm -f "$TOOLS_DIR/xcodegen.zip"
+        chmod +x "$TOOLS_DIR/xcodegen/bin/xcodegen"
+        export PATH="$TOOLS_DIR/xcodegen/bin:$PATH"
+    fi
 fi
+
+# If we fetched the binary in a previous run, make sure it's on PATH.
+if ! command -v xcodegen >/dev/null 2>&1 && [ -x "$TOOLS_DIR/xcodegen/bin/xcodegen" ]; then
+    export PATH="$TOOLS_DIR/xcodegen/bin:$PATH"
+fi
+
+command -v xcodegen >/dev/null 2>&1 || die "xcodegen install failed — see output above."
 
 # Clone or update.
 mkdir -p "$(dirname "$TARGET_DIR")"

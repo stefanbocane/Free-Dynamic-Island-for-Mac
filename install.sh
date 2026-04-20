@@ -18,8 +18,20 @@ cd "$(dirname "$0")"
 ROOT="$(pwd)"
 APP_NAME="IslandApp"
 APP_BUNDLE="${APP_NAME}.app"
-DEST="/Applications/${APP_BUNDLE}"
 BUILD_DIR="${ROOT}/build"
+
+# Prefer /Applications. Fall back to ~/Applications when the user can't write
+# to the system-wide location (non-admin / managed accounts). Launch-at-login
+# currently needs /Applications to work reliably — the fallback install still
+# runs, it just won't auto-start on boot.
+SYSTEM_APPS="/Applications"
+USER_APPS="${HOME}/Applications"
+if [ -w "$SYSTEM_APPS" ]; then
+    DEST="${SYSTEM_APPS}/${APP_BUNDLE}"
+else
+    mkdir -p "$USER_APPS"
+    DEST="${USER_APPS}/${APP_BUNDLE}"
+fi
 
 log()  { printf "\033[1;34m→\033[0m %s\n" "$*"; }
 ok()   { printf "\033[1;32m✓\033[0m %s\n" "$*"; }
@@ -81,6 +93,13 @@ xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
 log "Launching ${APP_NAME}"
 open "$DEST"
 
-ok "Installed. Grant macOS permissions once when prompted — they'll persist"
-ok "across future rebuilds because signing is stable. Enable 'Launch at Login'"
-ok "in Settings to have it come up automatically on boot."
+ok "Installed to ${DEST}."
+ok "Grant macOS permissions once when prompted — they'll persist across future"
+ok "rebuilds because signing is stable."
+if [ "$DEST" != "${SYSTEM_APPS}/${APP_BUNDLE}" ]; then
+    warn "Installed to ~/Applications because /Applications wasn't writable"
+    warn "(non-admin account). Launch-at-login needs /Applications — ask an admin"
+    warn "to run the installer if you want it to start automatically on boot."
+else
+    ok "Enable 'Launch at Login' in Settings to have it come up on boot."
+fi
