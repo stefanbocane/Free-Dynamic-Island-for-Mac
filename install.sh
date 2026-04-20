@@ -42,6 +42,21 @@ die()  { printf "\033[1;31m✗\033[0m %s\n" "$*" >&2; exit 1; }
 command -v xcodegen >/dev/null 2>&1 || die "xcodegen not found. Install with: brew install xcodegen"
 command -v xcodebuild >/dev/null 2>&1 || die "xcodebuild not found. Install Xcode + command-line tools."
 
+# xcodebuild is on PATH even with CLT-only, but it can't build .app targets
+# unless xcode-select points at a full Xcode install. Catch this early with
+# a clearer message than "tool 'xcodebuild' requires Xcode".
+ACTIVE_DEVELOPER_DIR="$(xcode-select -p 2>/dev/null || true)"
+case "$ACTIVE_DEVELOPER_DIR" in
+    */CommandLineTools)
+        die "Building IslandApp needs full Xcode, not just Command Line Tools.
+  1. Install Xcode from the Mac App Store (free, ~15GB).
+  2. Run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+  3. Re-run this installer.
+Alternatively, ask someone who has Xcode to share the built IslandApp.app
+directly — drop it into ~/Applications and right-click → Open to launch."
+        ;;
+esac
+
 # 1. Stable signing identity (idempotent — exits fast if already set up).
 log "Ensuring stable code-signing identity"
 ./setup-signing.sh

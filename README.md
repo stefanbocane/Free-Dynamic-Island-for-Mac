@@ -6,7 +6,7 @@ So annoying that people make you pay for these dynamic island apps. Simple one h
 ## Requirements
 
 - macOS 14 Sonoma or newer (26.x tested)
-- Xcode Command Line Tools (`xcode-select --install`)
+- **Full Xcode** from the Mac App Store (free, ~15GB) — Command Line Tools alone aren't enough; the installer builds a `.app` bundle, which needs the full IDE. After install, run `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` if it isn't already pointed there.
 
 The one-shot installer below takes care of the rest (Homebrew + XcodeGen).
 
