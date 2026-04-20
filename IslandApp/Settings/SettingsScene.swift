@@ -23,6 +23,7 @@ struct SettingsScene: View {
 struct GeneralTab: View {
     @EnvironmentObject var launch: LaunchAtLogin
     @EnvironmentObject var system: SystemHUDService
+    @EnvironmentObject var fullscreen: FullscreenWatcher
 
     var body: some View {
         ScrollView {
@@ -33,9 +34,25 @@ struct GeneralTab: View {
                 sectionHeader("HUDs")
                 hudBox
 
+                sectionHeader("Behavior")
+                behaviorBox
+
                 Spacer()
             }
             .padding(22)
+        }
+    }
+
+    private var behaviorBox: some View {
+        SettingsBox {
+            Toggle(isOn: $fullscreen.hideOnFullscreen) {
+                Text("Hide when a fullscreen app is playing audio")
+                    .font(.system(size: 13, weight: .medium))
+            }
+            Text("Turn off to keep the pill visible on top of fullscreen videos and games. Island still uses a non-activating panel so it won't steal focus.")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
         }
     }
 
@@ -236,31 +253,25 @@ struct AboutTab: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Install to /Applications/")
+                    Text("One-shot install from anywhere")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("For launch-at-login to work (and to keep your TCC permissions stable), copy the built app into /Applications/ and run it from there:")
+                    Text("Paste this into Terminal on a fresh Mac — it clones the repo, sets up stable code signing, builds Release, installs to /Applications/, and launches. Re-run any time to update.")
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
                     codeBlock("""
-                    xcodebuild -project IslandApp.xcodeproj \\
-                        -scheme IslandApp -configuration Release \\
-                        -derivedDataPath build
-                    cp -R build/Build/Products/Release/IslandApp.app /Applications/
-                    open /Applications/IslandApp.app
+                    curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
                     """)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Keep permissions across rebuilds")
+                    Text("Update your local copy")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("Every time you rebuild, macOS sees a new code-signing hash and re-asks for permissions. To fix this for development, run the setup script once. It creates a self-signed certificate, imports it to your login keychain, and patches project.yml so every rebuild is signed by the same stable identity — TCC stops treating each build as a new app.")
+                    Text("If the repo is already cloned, just run install.sh. Stable self-signing means your granted permissions stick across every rebuild.")
                         .font(.system(size: 12))
                         .foregroundStyle(.secondary)
                     codeBlock("""
                     cd ~/Developer/IslandApp
-                    ./setup-signing.sh
-                    xcodegen generate
-                    xcodebuild build
+                    ./install.sh
                     """)
                 }
 

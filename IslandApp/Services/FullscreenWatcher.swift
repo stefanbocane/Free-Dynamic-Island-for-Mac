@@ -8,6 +8,15 @@ import Combine
 final class FullscreenWatcher: ObservableObject {
     @Published private(set) var shouldHidePanel: Bool = false
 
+    /// User-visible preference. When false, the pill stays visible even in
+    /// fullscreen. Persisted via UserDefaults; observed by Settings.
+    @Published var hideOnFullscreen: Bool = UserDefaults.standard.object(forKey: "hideOnFullscreen") as? Bool ?? true {
+        didSet {
+            UserDefaults.standard.set(hideOnFullscreen, forKey: "hideOnFullscreen")
+            refresh()
+        }
+    }
+
     private var pollTimer: Timer?
 
     init() {
@@ -35,6 +44,10 @@ final class FullscreenWatcher: ObservableObject {
     }
 
     @objc private func refresh() {
+        guard hideOnFullscreen else {
+            shouldHidePanel = false
+            return
+        }
         let frontApp = NSWorkspace.shared.frontmostApplication
         let fullscreen = isFrontmostAppFullscreen(frontApp: frontApp)
         let audio = AudioActivityService.isDefaultOutputRunning()

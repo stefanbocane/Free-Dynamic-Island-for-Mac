@@ -12,6 +12,7 @@ struct IslandApp: App {
                 .environmentObject(appDelegate.controller.system)
                 .environmentObject(appDelegate.controller.calendar)
                 .environmentObject(appDelegate.controller.notes)
+                .environmentObject(appDelegate.controller.fullscreen)
                 .environmentObject(appDelegate.controller)
                 .frame(minWidth: 460, minHeight: 440)
         }

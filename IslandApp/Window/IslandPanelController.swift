@@ -175,10 +175,16 @@ final class IslandPanelController: NSResponder, ObservableObject {
     func layout(for m: NotchMetrics) {
         guard let panel else { return }
         let size = preferredSize(for: state, metrics: m)
-        let origin = CGPoint(
-            x: m.notchRect.midX - size.width / 2,
-            y: m.screen.frame.maxY - size.height
-        )
+        // HUDs hang as a floating pill below the menu bar; all other states
+        // stay flush with the screen top so hover tracking covers the notch strip.
+        let y: CGFloat
+        switch state {
+        case .transientHUD:
+            y = m.screen.frame.maxY - size.height - m.menuBarRect.height - 6
+        default:
+            y = m.screen.frame.maxY - size.height
+        }
+        let origin = CGPoint(x: m.notchRect.midX - size.width / 2, y: y)
         let target = CGRect(origin: origin, size: size)
         panel.setFrame(target, display: true, animate: false)
     }
@@ -194,7 +200,12 @@ final class IslandPanelController: NSResponder, ObservableObject {
         case .compact:
             let w = m.notchWidth + 2 * 60
             return CGSize(width: w, height: baseHeight + notchPadding)
-        case .expanded, .transientHUD:
+        case .transientHUD:
+            // Pill-shaped HUD: wide enough for a value bar, one-line tall.
+            // Floats below the menu bar (see layout()).
+            let w = m.notchWidth + 2 * 160
+            return CGSize(width: w, height: 38)
+        case .expanded:
             let w = max(m.notchWidth + 2 * 340, 740)
             return CGSize(width: w, height: baseHeight + 200)
         case .hidden:
@@ -207,8 +218,8 @@ final class IslandPanelController: NSResponder, ObservableObject {
     /// tracking stable — cursor-at-screen-edge never exits the panel bounds.
     static func contentTopPadding(for state: IslandState) -> CGFloat {
         switch state {
-        case .compact, .hidden: return 0
-        case .expanded, .transientHUD: return 14
+        case .compact, .hidden, .transientHUD: return 0
+        case .expanded: return 14
         }
     }
 

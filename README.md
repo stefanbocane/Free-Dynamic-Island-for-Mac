@@ -9,7 +9,25 @@ So annoying that people make you pay for these dynamic island apps. Simple one h
 - Xcode 15+
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen): `brew install xcodegen`
 
-## Build
+## Install
+
+**One-shot (fresh Mac, nothing set up):**
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh | bash
+```
+
+This installs Homebrew + xcodegen if missing, clones the repo to `~/Developer/IslandApp`, then runs `install.sh` which sets up stable code signing, builds Release, installs to `/Applications/`, and launches.
+
+**Already cloned?** Just rebuild:
+
+```sh
+cd ~/Developer/IslandApp && ./install.sh
+```
+
+Grant macOS permissions the first time you see the prompts; they'll persist across every future rebuild because signing is stable. Flip **Launch at Login** in Settings and it comes up on boot like any other Mac app.
+
+## Build (Xcode, for development)
 
 ```sh
 cd ~/Developer/IslandApp
@@ -17,20 +35,7 @@ xcodegen generate
 open IslandApp.xcodeproj
 ```
 
-Product → Run from Xcode. The app will launch hidden (no Dock icon); a pill appears at the top of the notched display. A status-bar icon in the top-right lets you quit.
-
-## Install to /Applications (required for launch-at-login)
-
-`SMAppService.mainApp.register()` only works reliably when the app lives at a stable path. To enable launch-at-login:
-
-```sh
-# From inside Xcode: Product → Archive → Export → save somewhere
-# Or, build from CLI:
-xcodebuild -project IslandApp.xcodeproj -scheme IslandApp -configuration Release -derivedDataPath build
-cp -R build/Build/Products/Release/IslandApp.app /Applications/
-```
-
-Then open `/Applications/IslandApp.app`, enable the Launch at Login toggle in Settings.
+Product → Run. The app launches hidden (no Dock icon); a pill appears under the notch. Status-bar icon in the top-right lets you quit.
 
 ## Permissions
 

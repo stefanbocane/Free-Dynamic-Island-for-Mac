@@ -39,12 +39,17 @@ openssl req -x509 -newkey rsa:2048 -nodes \
     2>/dev/null
 
 # Bundle into PKCS#12 so `security import` accepts it.
-openssl pkcs12 -export -out cert.p12 -inkey key.pem -in cert.pem \
-    -password pass:
+# OpenSSL 3 uses AES-256-CBC + SHA-256 MAC by default, which `security import`
+# on macOS cannot decrypt with an empty password. Using `-legacy` plus a
+# throwaway passphrase avoids both incompatibilities — the passphrase is only
+# used to wrap the transient .p12 file and is discarded with the tmpdir.
+P12_PASS="islandapp"
+openssl pkcs12 -export -legacy -out cert.p12 -inkey key.pem -in cert.pem \
+    -password "pass:${P12_PASS}"
 
 # Import the keypair into the login keychain, granting codesign access.
-security import cert.p12 -k ~/Library/Keychains/login.keychain-db -P "" \
-    -T /usr/bin/codesign >/dev/null
+security import cert.p12 -k ~/Library/Keychains/login.keychain-db \
+    -P "${P12_PASS}" -T /usr/bin/codesign >/dev/null
 
 # Trust the cert so codesign accepts it without prompting.
 security add-trusted-cert -d -r trustRoot \

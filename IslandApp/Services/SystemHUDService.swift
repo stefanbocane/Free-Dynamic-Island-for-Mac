@@ -63,9 +63,16 @@ final class SystemHUDService: ObservableObject {
     func setTrueReplacementEnabled(_ enabled: Bool) {
         lastError = nil
         if enabled {
+            // Prompt the system dialog on first toggle so Island auto-appears
+            // in Privacy & Security → Accessibility. The call returns immediately;
+            // the user accepts asynchronously, so we also retry briefly below.
+            if !requestAccessibilityPermission() {
+                waitForAccessibility(timeout: 0.6)
+            }
             guard hasAccessibilityPermission() else {
-                lastError = "Accessibility permission required. Grant it in System Settings, then toggle again."
+                lastError = "Accessibility permission required. Approve Island in the system dialog (or add /Applications/IslandApp.app manually under Privacy & Security → Accessibility), then toggle again."
                 trueReplacementEnabled = false
+                NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
                 return
             }
             if startTap() {
@@ -85,6 +92,22 @@ final class SystemHUDService: ObservableObject {
     private func hasAccessibilityPermission() -> Bool {
         let opts = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as String: false] as CFDictionary
         return AXIsProcessTrustedWithOptions(opts)
+    }
+
+    /// Triggers the system's Accessibility prompt and registers Island under
+    /// Privacy & Security → Accessibility. Returns true if already granted.
+    @discardableResult
+    private func requestAccessibilityPermission() -> Bool {
+        let opts = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as String: true] as CFDictionary
+        return AXIsProcessTrustedWithOptions(opts)
+    }
+
+    private func waitForAccessibility(timeout: TimeInterval) {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if hasAccessibilityPermission() { return }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
     }
 
     private func startTap() -> Bool {
