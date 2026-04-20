@@ -17,6 +17,11 @@ final class IslandPanel: NSPanel {
         worksWhenModal = true
         acceptsMouseMovedEvents = true
         level = NSWindow.Level(rawValue: Int(CGShieldingWindowLevel()))
+        // `.canJoinAllSpaces` puts the panel on every Space (including
+        // fullscreen Spaces) regardless of whether `.fullScreenAuxiliary` is
+        // present, so we can't rely on the collection-behavior trick to hide
+        // the panel on fullscreen Spaces. Hiding is driven at runtime by the
+        // controller via `orderOut` / `orderFrontRegardless`.
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .ignoresCycle]
         registerForDraggedTypes([.fileURL, .URL])
     }

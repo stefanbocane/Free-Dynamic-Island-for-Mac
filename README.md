@@ -65,7 +65,7 @@ If you deny one, the corresponding feature gracefully degrades. Toggle in Settin
 General tab:
 - **Launch at login** — auto-start on boot (requires install to `/Applications/`).
 - **True volume HUD replacement** — opt-in, needs Accessibility permission. Suppresses the stock macOS volume HUD so only Island's pill shows.
-- **Hide when a fullscreen app is playing audio** — turn off to keep the pill visible over fullscreen video / games.
+- **Hide when a fullscreen app is active** — turn off to keep the pill visible over fullscreen apps.
 
 ## Architecture
 

@@ -162,12 +162,17 @@ final class IslandPanelController: NSResponder, ObservableObject {
             }
             .store(in: &cancellables)
 
+        // Fullscreen hide uses orderOut/orderFront rather than the animated
+        // `.hidden` state. orderOut removes the panel from the screen
+        // instantly — no alpha fade, no size shrink — which is the closest we
+        // can get to flicker-free since `activeSpaceDidChangeNotification`
+        // fires after the Space transition completes.
         fullscreen.$shouldHidePanel
             .receive(on: DispatchQueue.main)
             .sink { [weak self] hide in
-                guard let self else { return }
-                if hide { self.transition(to: .hidden) }
-                else if self.state.isHidden { self.transition(to: .compact) }
+                guard let panel = self?.panel else { return }
+                if hide { panel.orderOut(nil) }
+                else if !panel.isVisible { panel.orderFrontRegardless() }
             }
             .store(in: &cancellables)
     }

@@ -45,7 +45,7 @@ Personal Dynamic Island for macOS. A borderless `NSPanel` anchored to the notch,
 
 ## User preferences
 
-- `FullscreenWatcher.hideOnFullscreen` — persisted via `UserDefaults`. When false, the pill stays visible over fullscreen video/games. Default `true`. Exposed in Settings → General → Behavior.
+- `FullscreenWatcher.hideOnFullscreen` — persisted via `UserDefaults`. Default `true`. Exposed in Settings → General → Behavior. Detection uses the private `CGSCopyManagedDisplaySpaces` (type 4 = native fullscreen Space) plus a `CGWindowListCopyWindowInfo` size-match fallback for exclusive-mode games. **Don't try to hide via collection behavior** — `.canJoinAllSpaces` puts the panel on every Space (including fullscreen) regardless of whether `.fullScreenAuxiliary` is present, contrary to what Apple's docs imply. Hiding is done by `IslandPanelController` calling `panel.orderOut(nil)` / `orderFrontRegardless()` from the `$shouldHidePanel` observer — instant, no alpha-fade, since `activeSpaceDidChangeNotification` only fires after the Space transition completes (any animated hide flickers visibly).
 - `SystemHUDService.trueReplacementEnabled` — runtime only (not persisted across launches). Requires Accessibility.
 
 ## Release / distribution

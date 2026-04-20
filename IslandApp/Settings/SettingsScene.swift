@@ -46,10 +46,10 @@ struct GeneralTab: View {
     private var behaviorBox: some View {
         SettingsBox {
             Toggle(isOn: $fullscreen.hideOnFullscreen) {
-                Text("Hide when a fullscreen app is playing audio")
+                Text("Hide when a fullscreen app is active")
                     .font(.system(size: 13, weight: .medium))
             }
-            Text("Turn off to keep the pill visible on top of fullscreen videos and games. Island still uses a non-activating panel so it won't steal focus.")
+            Text("Turn off to keep the pill visible on top of fullscreen apps. Island still uses a non-activating panel so it won't steal focus.")
                 .font(.system(size: 11))
                 .foregroundStyle(.secondary)
                 .padding(.top, 2)
@@ -285,7 +285,7 @@ struct AboutTab: View {
                         "Sticky notes panel: + to add, click to edit, persists across launches.",
                         "Transient HUDs for volume, brightness, AirPods battery, charging.",
                         "File drop zone: drag a file onto the pill for AirDrop / Copy-Path / Move-to-Desktop.",
-                        "Auto-hide when a fullscreen app is playing audio."
+                        "Auto-hide when a fullscreen app is active."
                     ])
                 }
                 Spacer()
