@@ -20,6 +20,14 @@ curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreati
 
 This installs Homebrew + xcodegen if missing, clones the repo to `~/Developer/IslandApp`, then runs `install.sh` which sets up stable code signing, builds Release, installs to `/Applications/`, and launches.
 
+**Don't trust `curl | bash`?** Read it first:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/stefanbocane/DynamicIslandMacCreation-/main/bootstrap.sh -o bootstrap.sh
+less bootstrap.sh    # review
+bash bootstrap.sh
+```
+
 **Already cloned?** Just rebuild:
 
 ```sh
@@ -68,3 +76,7 @@ Short version: a borderless `NSPanel` hugs the notch; SwiftUI renders inside; a 
 - App Sandbox is off by design — `CGEventTap`, `IOBluetooth`, `IOKit`, and AppleEvents are all sandbox-hostile.
 - Self-signed (`setup-signing.sh` creates a stable identity in your login keychain). Not notarized, not for the App Store.
 - MediaRemote private framework is *not* used; Apple broke third-party access in macOS 15.4. Spotify is read via `DistributedNotificationCenter` + AppleScript only.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Forks and contributions welcome.
