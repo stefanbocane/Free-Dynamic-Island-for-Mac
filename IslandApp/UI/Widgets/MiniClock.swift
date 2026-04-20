@@ -17,6 +17,8 @@ struct MiniClock: View {
         Text(Self.formatter.string(from: now))
             .font(.system(size: 12, weight: .semibold, design: .rounded).monospacedDigit())
             .foregroundStyle(.white.opacity(0.85))
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
             .onAppear {
                 now = Date()
                 timer = Timer.publish(every: 20, on: .main, in: .common)
