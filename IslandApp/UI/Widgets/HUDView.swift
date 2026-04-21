@@ -9,8 +9,6 @@ struct HUDView: View {
             VolumeHUD(event: event)
         case .brightness:
             BrightnessHUD(event: event)
-        case .airpods:
-            AirPodsBatteryHUD(event: event)
         case .charging:
             ChargingHUD(event: event)
         }

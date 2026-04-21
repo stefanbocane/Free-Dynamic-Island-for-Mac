@@ -16,7 +16,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         installStatusItem()
 
-        // Trigger Calendar permission prompt on first run; Spotify/Bluetooth prompt
+        // Trigger Calendar permission prompt on first run; Spotify prompts
         // on first interaction. Accessibility and LoginItem are opt-in from Settings.
         controller.calendar.requestAccess()
 

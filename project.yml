@@ -42,7 +42,6 @@ targets:
         CFBundlePackageType: APPL
         NSCalendarsUsageDescription: "Island shows your next events in the pill under the notch."
         NSAppleEventsUsageDescription: "Island reads now-playing info from Spotify and controls playback."
-        NSBluetoothAlwaysUsageDescription: "Island displays AirPods and Bluetooth headphone battery levels."
         NSHumanReadableCopyright: ""
         NSPrincipalClass: NSApplication
         NSSupportsAutomaticTermination: false
@@ -54,6 +53,5 @@ targets:
         CODE_SIGN_ENTITLEMENTS: IslandApp/Resources/IslandApp.entitlements
         GENERATE_INFOPLIST_FILE: NO
     dependencies:
-      - sdk: IOBluetooth.framework
       - sdk: CoreAudio.framework
       - sdk: Carbon.framework

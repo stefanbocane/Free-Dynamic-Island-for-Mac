@@ -3,7 +3,6 @@ import Foundation
 enum HUDKind: Equatable {
     case volume
     case brightness
-    case airpods
     case charging
 }
 

@@ -2,7 +2,6 @@ import SwiftUI
 import EventKit
 import ServiceManagement
 import AppKit
-import IOBluetooth
 
 struct SettingsScene: View {
     var body: some View {
@@ -207,20 +206,6 @@ struct PermissionsTab: View {
                 )
 
                 PermissionCard(
-                    title: "Bluetooth",
-                    icon: "airpodspro",
-                    status: "Prompt appears on first use",
-                    statusTint: .secondary,
-                    explanation: "Reads AirPods / Bluetooth headphone battery levels so Island can show a little battery pill when they connect.",
-                    howTo: "The prompt appears when AirPods connect for the first time. If denied, toggle IslandApp in System Settings → Privacy & Security → Bluetooth.",
-                    actions: {
-                        Button("Open System Settings") {
-                            openURL("x-apple.systempreferences:com.apple.preference.security?Privacy_Bluetooth")
-                        }
-                    }
-                )
-
-                PermissionCard(
                     title: "Login Item",
                     icon: "power",
                     status: launch.isEnabled ? "Enabled" : "Disabled",
@@ -309,7 +294,7 @@ struct AboutTab: View {
                         "Spotify widget: live-ticking progress bar, transport controls, album-art accent.",
                         "Calendar widget: next event with Join button for Zoom/Meet/Teams links; rolls over to tomorrow when today is done.",
                         "Sticky notes panel: + to add, click to edit, persists across launches.",
-                        "Transient HUDs for volume, brightness, AirPods battery, charging.",
+                        "Transient HUDs for volume, brightness, charging.",
                         "File drop zone: drag a file onto the pill for AirDrop / Copy-Path / Move-to-Desktop.",
                         "Auto-hide when a fullscreen app is active."
                     ])

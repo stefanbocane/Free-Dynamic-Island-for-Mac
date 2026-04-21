@@ -26,8 +26,6 @@
 	<true/>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Island reads now-playing info from Spotify and controls playback.</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Island displays AirPods and Bluetooth headphone battery levels.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Island shows your next events in the pill under the notch.</string>
 	<key>NSHumanReadableCopyright</key>

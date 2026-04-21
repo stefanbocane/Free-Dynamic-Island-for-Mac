@@ -15,7 +15,6 @@ final class IslandPanelController: NSResponder, ObservableObject {
     let calendar: CalendarService
     let system: SystemHUDService
     let power: PowerService
-    let bluetooth: BluetoothBatteryService
     let fullscreen: FullscreenWatcher
     let accessibility: AccessibilityPreferences
     let router: WidgetRouter
@@ -39,7 +38,6 @@ final class IslandPanelController: NSResponder, ObservableObject {
         self.calendar = CalendarService()
         self.system = SystemHUDService()
         self.power = PowerService()
-        self.bluetooth = BluetoothBatteryService()
         self.fullscreen = FullscreenWatcher()
         self.accessibility = AccessibilityPreferences()
         self.launchAtLogin = LaunchAtLogin()
@@ -62,11 +60,6 @@ final class IslandPanelController: NSResponder, ObservableObject {
             .sink { [weak self] pct in
                 self?.router.push(hud: HUDEvent(kind: .charging, primaryValue: pct / 100.0, ttl: 3.0))
             }
-            .store(in: &cancellables)
-
-        bluetooth.onBatteryUpdate
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] hud in self?.router.push(hud: hud) }
             .store(in: &cancellables)
     }
 

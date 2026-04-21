@@ -4,7 +4,7 @@ Context for agents working in this repo. Read before touching signing, permissio
 
 ## The product
 
-Personal Dynamic Island for macOS. A borderless `NSPanel` anchored to the notch, SwiftUI content, LSUIElement (no Dock icon). Shows Spotify / calendar / volume / brightness / AirPods / charging. Unsandboxed by design — uses `CGEventTap`, `IOBluetooth`, `IOKit`, AppleEvents.
+Personal Dynamic Island for macOS. A borderless `NSPanel` anchored to the notch, SwiftUI content, LSUIElement (no Dock icon). Shows Spotify / calendar / volume / brightness / charging. Unsandboxed by design — uses `CGEventTap`, `IOKit`, AppleEvents.
 
 ## How to work on it
 
@@ -15,7 +15,7 @@ Personal Dynamic Island for macOS. A borderless `NSPanel` anchored to the notch,
 
 ## Signing / TCC gotchas (hit repeatedly — read first)
 
-1. **Ad-hoc signing (`-`) gives a new cdhash every build.** macOS TCC (the permission database) keys permissions by cdhash, so every rebuild re-prompts for Calendar / Bluetooth / Automation / Accessibility. `setup-signing.sh` fixes this by creating a self-signed cert `"IslandApp Self Signed"` in the login keychain and patching `project.yml` to use it. Always verify the project is using this identity before spending time debugging "permission loss" bugs.
+1. **Ad-hoc signing (`-`) gives a new cdhash every build.** macOS TCC (the permission database) keys permissions by cdhash, so every rebuild re-prompts for Calendar / Automation / Accessibility. `setup-signing.sh` fixes this by creating a self-signed cert `"IslandApp Self Signed"` in the login keychain and patching `project.yml` to use it. Always verify the project is using this identity before spending time debugging "permission loss" bugs.
 
 2. **OpenSSL 3 ↔ macOS `security import` incompatibility.** The default PKCS#12 format OpenSSL 3 writes uses SHA-256 MAC which `security import` can't decrypt with an empty password. Fix: `-legacy` flag **plus** a non-empty throwaway passphrase. `-legacy` alone is not enough — the MAC algorithm is the breaking piece. See `setup-signing.sh`.
 

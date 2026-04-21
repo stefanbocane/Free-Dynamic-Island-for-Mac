@@ -54,7 +54,6 @@ On first use, macOS will prompt for:
 |---|---|---|
 | Calendar | First fetch | Show next event |
 | Automation (Spotify) | First transport control | Playback controls, artwork fallback |
-| Bluetooth | First AirPods connect | Battery levels |
 | Accessibility | Only if you enable "True Volume HUD replacement" | Consume key events to suppress system HUD |
 | Login Item | First toggle on in Settings | Auto-launch |
 
@@ -73,7 +72,7 @@ Short version: a borderless `NSPanel` hugs the notch; SwiftUI renders inside; a 
 
 ## Notes
 
-- App Sandbox is off by design — `CGEventTap`, `IOBluetooth`, `IOKit`, and AppleEvents are all sandbox-hostile.
+- App Sandbox is off by design — `CGEventTap`, `IOKit`, and AppleEvents are all sandbox-hostile.
 - Self-signed (`setup-signing.sh` creates a stable identity in your login keychain). Not notarized, not for the App Store.
 - MediaRemote private framework is *not* used; Apple broke third-party access in macOS 15.4. Spotify is read via `DistributedNotificationCenter` + AppleScript only.
 

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Simple capsule progress bar shared by HUD widgets that don't use a custom
-/// visualizer (brightness, charging, AirPods). VolumeHUD uses its own
+/// visualizer (brightness, charging). VolumeHUD uses its own
 /// WaveformEqualizer instead.
 struct ValueBar: View {
     let value: Double
